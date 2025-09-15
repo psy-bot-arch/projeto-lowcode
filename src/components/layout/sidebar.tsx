@@ -23,10 +23,18 @@ interface SidebarProps {
   userName: string
   unreadNotifications?: number
   className?: string
+  activeTab?: string
+  onTabChange?: (tab: string) => void
 }
 
-export function Sidebar({ userRole, userName, unreadNotifications = 0, className }: SidebarProps) {
-  const [activeItem, setActiveItem] = useState("dashboard")
+export function Sidebar({ 
+  userRole, 
+  userName, 
+  unreadNotifications = 0, 
+  className,
+  activeTab = "dashboard",
+  onTabChange 
+}: SidebarProps) {
 
   const navigation = {
     attendant: [
@@ -94,12 +102,12 @@ export function Sidebar({ userRole, userName, unreadNotifications = 0, className
           {currentNavigation.map((item) => (
             <Button
               key={item.id}
-              variant={activeItem === item.id ? "secondary" : "ghost"}
+              variant={activeTab === item.id ? "secondary" : "ghost"}
               className={cn(
                 "w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                activeItem === item.id && "bg-sidebar-accent text-sidebar-accent-foreground"
+                activeTab === item.id && "bg-sidebar-accent text-sidebar-accent-foreground"
               )}
-              onClick={() => setActiveItem(item.id)}
+              onClick={() => onTabChange?.(item.id)}
             >
               <item.icon className="w-4 h-4 mr-3" />
               <span className="flex-1 text-left">{item.label}</span>
