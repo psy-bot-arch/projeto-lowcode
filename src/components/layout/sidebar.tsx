@@ -46,8 +46,8 @@ export function Sidebar({
     manager: [
       { id: "dashboard", label: "Dashboard", icon: Home },
       { id: "chat", label: "Chat", icon: MessageSquare, badge: 5 },
-      { id: "analytics", label: "Relatórios", icon: BarChart3 },
       { id: "team", label: "Equipe", icon: Users },
+      { id: "analytics", label: "Relatórios", icon: BarChart3 },
       { id: "schedule", label: "Agenda", icon: Calendar },
       { id: "performance", label: "Performance", icon: Activity },
     ]

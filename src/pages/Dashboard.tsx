@@ -6,6 +6,7 @@ import { ChatInterface } from "@/components/chat/chat-interface"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { StatusIndicator } from "@/components/ui/status-indicator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { 
   MessageSquare, 
@@ -133,9 +134,10 @@ export default function Dashboard({ userRole = "manager" }: DashboardProps) {
       <main className="flex-1 overflow-hidden">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
           <div className="border-b border-border px-6 pt-4">
-            <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
+            <TabsList className="grid w-full grid-cols-4 lg:w-[500px]">
               <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
               <TabsTrigger value="chat">Conversas</TabsTrigger>
+              <TabsTrigger value="team">Equipe</TabsTrigger>
               <TabsTrigger value="reports">Relatórios</TabsTrigger>
             </TabsList>
           </div>
@@ -277,6 +279,388 @@ export default function Dashboard({ userRole = "manager" }: DashboardProps) {
                 onSendMessage={handleSendMessage}
                 className="h-[calc(100vh-12rem)]"
               />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="team" className="h-full">
+            <div className="p-6 overflow-y-auto h-full">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h1 className="text-2xl font-bold text-foreground">Gerenciamento de Equipe</h1>
+                  <p className="text-muted-foreground">Painel de atendentes e caixa de entrada unificada</p>
+                </div>
+                <Button className="bg-gradient-primary">
+                  <Users className="w-4 h-4 mr-2" />
+                  Adicionar Atendente
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Caixa de Entrada Unificada */}
+                <div className="lg:col-span-2 space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Caixa de Entrada Unificada</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {/* Mensagens pendentes */}
+                        <div className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                              <MessageSquare className="w-5 h-5 text-primary" />
+                            </div>
+                            <div>
+                              <p className="font-medium">Maria Silva</p>
+                              <p className="text-sm text-muted-foreground">WhatsApp • Há 2 min</p>
+                            </div>
+                          </div>
+                          <Badge variant="destructive">Urgente</Badge>
+                        </div>
+                        
+                        <div className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                              <Mail className="w-5 h-5 text-blue-600" />
+                            </div>
+                            <div>
+                              <p className="font-medium">João Santos</p>
+                              <p className="text-sm text-muted-foreground">Email • Há 15 min</p>
+                            </div>
+                          </div>
+                          <Badge variant="outline">Normal</Badge>
+                        </div>
+
+                        <div className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                              <Phone className="w-5 h-5 text-green-600" />
+                            </div>
+                            <div>
+                              <p className="font-medium">Ana Costa</p>
+                              <p className="text-sm text-muted-foreground">Telegram • Há 1h</p>
+                            </div>
+                          </div>
+                          <Badge variant="secondary">Aguardando</Badge>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Painel de Atendentes */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Atendentes Online</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {[
+                          { name: "Ana Santos", status: "online", chats: 5, avgTime: "1m 45s" },
+                          { name: "Carlos Lima", status: "online", chats: 3, avgTime: "2m 30s" },
+                          { name: "Maria Costa", status: "busy", chats: 7, avgTime: "1m 20s" },
+                          { name: "Pedro Silva", status: "online", chats: 4, avgTime: "3m 10s" },
+                          { name: "Julia Ferreira", status: "away", chats: 2, avgTime: "2m 05s" },
+                          { name: "Roberto Alves", status: "online", chats: 6, avgTime: "1m 55s" }
+                        ].map((attendant, index) => (
+                          <div key={index} className="p-4 border rounded-lg">
+                            <div className="flex items-center justify-between mb-3">
+                              <div className="flex items-center space-x-2">
+                                <StatusIndicator 
+                                  status={attendant.status as "online" | "busy" | "away"} 
+                                  size="sm" 
+                                />
+                                <span className="font-medium">{attendant.name}</span>
+                              </div>
+                              <Badge variant="outline">{attendant.chats} chats</Badge>
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              <div className="flex justify-between">
+                                <span>Tempo médio:</span>
+                                <span>{attendant.avgTime}</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Painel Lateral */}
+                <div className="space-y-6">
+                  {/* Respostas Rápidas */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm font-medium">Respostas Rápidas</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <Button variant="outline" className="w-full text-left justify-start text-sm">
+                        "Olá! Como posso ajudá-lo hoje?"
+                      </Button>
+                      <Button variant="outline" className="w-full text-left justify-start text-sm">
+                        "Aguarde um momento, vou verificar..."
+                      </Button>
+                      <Button variant="outline" className="w-full text-left justify-start text-sm">
+                        "Posso agendar uma consulta para você"
+                      </Button>
+                      <Button variant="outline" className="w-full text-left justify-start text-sm">
+                        "Obrigado pelo contato!"
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  {/* Integração com Agenda */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm font-medium">Agenda Médica</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="text-sm">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-muted-foreground">Próximas consultas:</span>
+                          <Badge variant="secondary">8</Badge>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-xs">
+                            <span>Dr. João Silva</span>
+                            <span>14:30</span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span>Dra. Ana Costa</span>
+                            <span>15:00</span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span>Dr. Carlos Lima</span>
+                            <span>15:30</span>
+                          </div>
+                        </div>
+                      </div>
+                      <Button variant="outline" className="w-full text-sm">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Ver Agenda Completa
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  {/* Histórico de Conversas */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm font-medium">Histórico Recente</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="space-y-2">
+                        <div className="text-xs border-l-2 border-primary pl-2">
+                          <p className="font-medium">Maria Silva</p>
+                          <p className="text-muted-foreground">Consulta agendada - 10:30</p>
+                        </div>
+                        <div className="text-xs border-l-2 border-green-500 pl-2">
+                          <p className="font-medium">João Santos</p>
+                          <p className="text-muted-foreground">Dúvida resolvida - 09:45</p>
+                        </div>
+                        <div className="text-xs border-l-2 border-blue-500 pl-2">
+                          <p className="font-medium">Ana Costa</p>
+                          <p className="text-muted-foreground">Reagendamento - 09:15</p>
+                        </div>
+                      </div>
+                      <Button variant="outline" className="w-full text-sm">
+                        <Clock className="w-4 h-4 mr-2" />
+                        Ver Histórico Completo
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="team" className="h-full">
+            <div className="p-6 overflow-y-auto h-full">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h1 className="text-2xl font-bold text-foreground">Gerenciamento de Equipe</h1>
+                  <p className="text-muted-foreground">Painel de atendentes e caixa de entrada unificada</p>
+                </div>
+                <Button className="bg-gradient-primary">
+                  <Users className="w-4 h-4 mr-2" />
+                  Adicionar Atendente
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Caixa de Entrada Unificada */}
+                <div className="lg:col-span-2 space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Caixa de Entrada Unificada</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {/* Mensagens pendentes */}
+                        <div className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                              <MessageSquare className="w-5 h-5 text-primary" />
+                            </div>
+                            <div>
+                              <p className="font-medium">Maria Silva</p>
+                              <p className="text-sm text-muted-foreground">WhatsApp • Há 2 min</p>
+                            </div>
+                          </div>
+                          <Badge variant="destructive">Urgente</Badge>
+                        </div>
+                        
+                        <div className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                              <Mail className="w-5 h-5 text-blue-600" />
+                            </div>
+                            <div>
+                              <p className="font-medium">João Santos</p>
+                              <p className="text-sm text-muted-foreground">Email • Há 15 min</p>
+                            </div>
+                          </div>
+                          <Badge variant="outline">Normal</Badge>
+                        </div>
+
+                        <div className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                              <Phone className="w-5 h-5 text-green-600" />
+                            </div>
+                            <div>
+                              <p className="font-medium">Ana Costa</p>
+                              <p className="text-sm text-muted-foreground">Telegram • Há 1h</p>
+                            </div>
+                          </div>
+                          <Badge variant="secondary">Aguardando</Badge>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Painel de Atendentes */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Atendentes Online</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {[
+                          { name: "Ana Santos", status: "online", chats: 5, avgTime: "1m 45s" },
+                          { name: "Carlos Lima", status: "online", chats: 3, avgTime: "2m 30s" },
+                          { name: "Maria Costa", status: "busy", chats: 7, avgTime: "1m 20s" },
+                          { name: "Pedro Silva", status: "online", chats: 4, avgTime: "3m 10s" },
+                          { name: "Julia Ferreira", status: "away", chats: 2, avgTime: "2m 05s" },
+                          { name: "Roberto Alves", status: "online", chats: 6, avgTime: "1m 55s" }
+                        ].map((attendant, index) => (
+                          <div key={index} className="p-4 border rounded-lg">
+                            <div className="flex items-center justify-between mb-3">
+                              <div className="flex items-center space-x-2">
+                                <StatusIndicator 
+                                  status={attendant.status as "online" | "busy" | "away"} 
+                                  size="sm" 
+                                />
+                                <span className="font-medium">{attendant.name}</span>
+                              </div>
+                              <Badge variant="outline">{attendant.chats} chats</Badge>
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              <div className="flex justify-between">
+                                <span>Tempo médio:</span>
+                                <span>{attendant.avgTime}</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Painel Lateral */}
+                <div className="space-y-6">
+                  {/* Respostas Rápidas */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm font-medium">Respostas Rápidas</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <Button variant="outline" className="w-full text-left justify-start text-sm">
+                        "Olá! Como posso ajudá-lo hoje?"
+                      </Button>
+                      <Button variant="outline" className="w-full text-left justify-start text-sm">
+                        "Aguarde um momento, vou verificar..."
+                      </Button>
+                      <Button variant="outline" className="w-full text-left justify-start text-sm">
+                        "Posso agendar uma consulta para você"
+                      </Button>
+                      <Button variant="outline" className="w-full text-left justify-start text-sm">
+                        "Obrigado pelo contato!"
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  {/* Integração com Agenda */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm font-medium">Agenda Médica</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="text-sm">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-muted-foreground">Próximas consultas:</span>
+                          <Badge variant="secondary">8</Badge>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-xs">
+                            <span>Dr. João Silva</span>
+                            <span>14:30</span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span>Dra. Ana Costa</span>
+                            <span>15:00</span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span>Dr. Carlos Lima</span>
+                            <span>15:30</span>
+                          </div>
+                        </div>
+                      </div>
+                      <Button variant="outline" className="w-full text-sm">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Ver Agenda Completa
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  {/* Histórico de Conversas */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm font-medium">Histórico Recente</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="space-y-2">
+                        <div className="text-xs border-l-2 border-primary pl-2">
+                          <p className="font-medium">Maria Silva</p>
+                          <p className="text-muted-foreground">Consulta agendada - 10:30</p>
+                        </div>
+                        <div className="text-xs border-l-2 border-green-500 pl-2">
+                          <p className="font-medium">João Santos</p>
+                          <p className="text-muted-foreground">Dúvida resolvida - 09:45</p>
+                        </div>
+                        <div className="text-xs border-l-2 border-blue-500 pl-2">
+                          <p className="font-medium">Ana Costa</p>
+                          <p className="text-muted-foreground">Reagendamento - 09:15</p>
+                        </div>
+                      </div>
+                      <Button variant="outline" className="w-full text-sm">
+                        <Clock className="w-4 h-4 mr-2" />
+                        Ver Histórico Completo
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
             </div>
           </TabsContent>
 
